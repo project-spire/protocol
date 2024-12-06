@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package spire;
+
+message BaseMessage {
+  oneof message {
+    
+  }
+}
