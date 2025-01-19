@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package spire.msg;
 
-message HeartBeat {
+message Heartbeat {
   uint32 seq = 1;
 }

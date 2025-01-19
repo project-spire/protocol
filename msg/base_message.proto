@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-import "net/heart_beat.proto";
+import "net/heartbeat.proto";
 
 package spire.msg;
 
 message BaseMessage {
   oneof message {
-    HeartBeat heart_beat = 1;
+    Heartbeat heartbeat = 1;
   }
 }
