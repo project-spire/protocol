@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package spire.msg;
+
+message Login {
+    uint64 account_id = 1;
+    uint64 character_id = 2;
+    string token = 3;
+}
