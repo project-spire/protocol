@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "net/heartbeat.proto";
 import "net/login.proto";
+import "net/ping.proto";
 
 package spire.msg;
 
@@ -9,5 +10,6 @@ message BaseMessage {
   oneof message {
     Heartbeat heartbeat = 1;
     Login login = 2;
+    Ping ping = 3;
   }
 }
