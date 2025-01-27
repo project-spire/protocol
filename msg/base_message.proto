@@ -8,8 +8,10 @@ package spire.msg;
 
 message BaseMessage {
   oneof message {
-    Heartbeat heartbeat = 1;
-    Login login = 2;
-    Ping ping = 3;
+    Ping ping = 1;
+    Heartbeat heartbeat = 2;
+
+    LoginAvailable login_available = 1000;
+    Login login = 1001;
   }
 }
