@@ -2,7 +2,7 @@ edition = "2023";
 
 package spire.msg;
 
-option go_package = "spire.msg";
+option go_package = "msg/net";
 
 message LoginAvailable {}
 

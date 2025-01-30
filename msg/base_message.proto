@@ -6,7 +6,7 @@ import "net/ping.proto";
 
 package spire.msg;
 
-option go_package = "spire.msg";
+option go_package = "msg/";
 
 message BaseMessage {
   oneof message {
