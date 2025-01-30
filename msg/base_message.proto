@@ -1,10 +1,12 @@
-syntax = "proto3";
+edition = "2023";
 
 import "net/heartbeat.proto";
 import "net/login.proto";
 import "net/ping.proto";
 
 package spire.msg;
+
+option go_package = "spire.msg";
 
 message BaseMessage {
   oneof message {

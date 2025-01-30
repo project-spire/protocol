@@ -1,5 +1,7 @@
-syntax = "proto3";
+edition = "2023";
 
 package spire.msg;
+
+option go_package = "spire.msg";
 
 message Heartbeat {}
