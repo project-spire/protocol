@@ -2,8 +2,6 @@ edition = "2023";
 
 package spire.msg;
 
-option go_package = "msg/net";
-
 message Ping {
     int64 timestamp = 1;
 }
