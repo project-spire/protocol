@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package spire.protocol.auth;
 
-enum Role {
+enum LoginRole {
   Player = 0;
   CheatPlayer = 1;
   Admin = 2;
 }
 
 message Login {
-  Role role = 1;
+  LoginRole role = 1;
   uint64 account_id = 2;
   uint64 character_id = 3;
   string token = 4;
