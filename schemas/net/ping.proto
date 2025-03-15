@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package spire.protocol.net;
+
+message Ping {
+  int64 timestamp = 1;
+}
