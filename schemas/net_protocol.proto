@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "net/heartbeat.proto";
+import "net/ping.proto";
+
+package spire.protocol.net;
+
+message NetProtocol {
+  oneof protocol {
+    Ping ping = 1;
+    Heartbeat heartbeat = 2;
+  }
+}

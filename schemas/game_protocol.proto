@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "game/movement.proto";
+
+package spire.protocol.game;
+
+message GameProtocol {
+  oneof protocol {
+    Movements movements = 1;
+  }
+}

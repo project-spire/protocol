@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "math_types.proto";
+
+package spire.protocol.game;
+
+enum MovementType {
+  Continuous = 0;
+  Discrete = 1;
+}
+
+message Movement {
+  MovementType type = 1;
+  uint64 entity = 2;
+  PVector2 target = 3;
+}
+
+message Movements {
+  repeated Movement list = 1;
+}
+

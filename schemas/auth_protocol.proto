@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+import "auth/login.proto";
+
+package spire.protocol.auth;
+
+message AuthProtocol {
+  oneof protocol {
+    Login login = 1;
+  }
+}
