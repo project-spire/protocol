@@ -12,6 +12,7 @@ pub mod net {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
 }
 
+#[derive(Eq, PartialEq, Debug)]
 pub enum Protocol {
     None = 0,
     Auth = 1,
