@@ -12,6 +12,8 @@ pub mod net {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
 }
 
+pub const HEADER_SIZE: usize = 4;
+
 #[derive(Eq, PartialEq, Debug)]
 pub enum Protocol {
     None = 0,
@@ -20,7 +22,7 @@ pub enum Protocol {
     Net = 3,
 }
 
-pub fn write_header(protocol: Protocol, length: u16, buf: &mut [u8; 4]) {
+pub fn write_header(protocol: Protocol, length: u16, buf: &mut [u8; HEADER_SIZE]) {
     const RESERVED: u8 = 0u8;
 
     buf[0] = protocol as u8;
@@ -29,7 +31,7 @@ pub fn write_header(protocol: Protocol, length: u16, buf: &mut [u8; 4]) {
     buf[3] = length as u8;
 }
 
-pub fn read_header(buf: &[u8; 4]) -> (Protocol, u16) {
+pub fn read_header(buf: &[u8; HEADER_SIZE]) -> (Protocol, u16) {
     let protocol = match buf[0] {
         1 => Protocol::Auth,
         2 => Protocol::Game,

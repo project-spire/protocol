@@ -6,6 +6,7 @@ package spire.protocol.game;
 
 message GameProtocol {
   oneof protocol {
-    Movements movements = 1;
+    MovementSyncList movement_sync_list = 1;
+    MovementCommand movement_command = 2;
   }
 }
