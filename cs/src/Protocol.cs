@@ -1,8 +1,8 @@
 using System;
 
-namespace spire.protocol;
+namespace Spire.Protocol;
 
-public enum Protocol : byte
+public enum ProtocolCategory : byte
 {
     None = 0,
     Auth = 1,
@@ -12,30 +12,31 @@ public enum Protocol : byte
 
 public static class ProtocolHeader
 {
-    private const byte RESERVED = 0;
+    public const uint HeaderSize = 4;
+    private const byte Reserved = 0;
 
-    public static void Write(Protocol protocol, ushort length, Span<byte> buffer)
+    public static void Write(ProtocolCategory protocolCategory, ushort length, Span<byte> buffer)
     {
         if (buffer.Length < 4)
             throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long.");
 
-        buffer[0] = (byte)protocol;
-        buffer[1] = RESERVED;
+        buffer[0] = (byte)protocolCategory;
+        buffer[1] = Reserved;
         buffer[2] = (byte)(length >> 8);
         buffer[3] = (byte)length;
     }
 
-    public static (Protocol, ushort) Read(ReadOnlySpan<byte> buffer)
+    public static (ProtocolCategory, ushort) Read(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < 4)
             throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long.");
 
         var protocol = buffer[0] switch
         {
-            1 => Protocol.Auth,
-            2 => Protocol.Game,
-            3 => Protocol.Net,
-            _ => Protocol.None
+            1 => ProtocolCategory.Auth,
+            2 => ProtocolCategory.Game,
+            3 => ProtocolCategory.Net,
+            _ => ProtocolCategory.None
         };
         var length = (ushort)((buffer[2] << 8) | buffer[3]);
 
