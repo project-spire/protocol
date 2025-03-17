@@ -12,7 +12,7 @@ public enum ProtocolCategory : byte
 
 public static class ProtocolHeader
 {
-    public const uint HeaderSize = 4;
+    public const int HeaderSize = 4;
     private const byte Reserved = 0;
 
     public static void Write(ProtocolCategory protocolCategory, ushort length, Span<byte> buffer)
