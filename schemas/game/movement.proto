@@ -4,6 +4,8 @@ import "math_types.proto";
 
 package spire.protocol.game;
 
+option csharp_namespace = "spire.protocol.game";
+
 enum PMovementState {
   Idle = 0;
   Walking = 1;

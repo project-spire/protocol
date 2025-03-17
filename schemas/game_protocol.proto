@@ -4,6 +4,8 @@ import "game/movement.proto";
 
 package spire.protocol.game;
 
+option csharp_namespace = "spire.protocol.game";
+
 message GameProtocol {
   oneof protocol {
     MovementSyncList movement_sync_list = 1;

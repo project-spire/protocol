@@ -1,6 +1,6 @@
 using System;
 
-namespace Spire.Protocol;
+namespace spire.protocol;
 
 public enum ProtocolCategory : byte
 {

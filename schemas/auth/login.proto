@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package spire.protocol.auth;
 
+option csharp_namespace = "spire.protocol.auth";
+
 enum LoginRole {
   Player = 0;
   CheatPlayer = 1;
