@@ -1,9 +1,14 @@
 syntax = "proto3";
 
-package spire.protocol.net;
+import "google/protobuf/timestamp.proto";
 
+package spire.protocol.net;
 option csharp_namespace = "spire.protocol.net";
 
 message Ping {
-  int64 timestamp = 1;
+  google.protobuf.Timestamp timestamp = 1;
+}
+
+message Pong {
+  google.protobuf.Timestamp timestamp = 1;
 }

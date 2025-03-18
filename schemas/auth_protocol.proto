@@ -3,7 +3,6 @@ syntax = "proto3";
 import "auth/login.proto";
 
 package spire.protocol.auth;
-
 option csharp_namespace = "spire.protocol.auth";
 
 message AuthProtocol {

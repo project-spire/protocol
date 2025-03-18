@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 package spire.protocol;
-
 option csharp_namespace = "spire.protocol";
 
 message PPoint2 {

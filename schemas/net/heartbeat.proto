@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 package spire.protocol.net;
-
 option csharp_namespace = "spire.protocol.net";
 
 message Heartbeat {}
