@@ -12,6 +12,7 @@ pub mod net {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
 }
 
+pub use prost::Message;
 use prost::EncodeError;
 
 pub const HEADER_SIZE: usize = 4;
