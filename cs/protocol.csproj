@@ -13,10 +13,6 @@
         <PackageReference Include="Google.Protobuf" Version="3.30.1" />
     </ItemGroup>
     
-    <ItemGroup>
-      <Folder Include="obj\" />
-    </ItemGroup>
-    
     <Target Name="CompileSchemas" BeforeTargets="BeforeBuild" Inputs="@(ProtocolSchemas)" Outputs="@(CompiledSchemas)">
         <MakeDir Directories="$(IntermediateOutputPath)\gen" Condition="!Exists('$(IntermediateOutputPath)\gen')" />
         <Exec Command="protoc --proto_path=../schemas --csharp_out=$(IntermediateOutputPath)/gen --csharp_opt=file_extension=.g.cs @(ProtocolSchemas, ' ')"
