@@ -22,13 +22,28 @@ pub enum ProtocolCategory {
     Net = 3,
 }
 
-pub fn write_header(category: ProtocolCategory, length: u16, buf: &mut [u8; HEADER_SIZE]) {
+#[derive(Debug, Clone)]
+pub enum SerializeError {
+    BodyLengthExceeded,
+}
+
+pub fn write_header(
+    category: ProtocolCategory,
+    length: usize,
+    buf: &mut [u8; HEADER_SIZE]
+) -> Result<(), SerializeError> {
     const RESERVED: u8 = 0u8;
+    
+    if length > u16::max as usize {
+        return Err(SerializeError::BodyLengthExceeded);
+    }
 
     buf[0] = category as u8;
     buf[1] = RESERVED;
     buf[2] = (length >> 8) as u8;
     buf[3] = length as u8;
+    
+    Ok(())
 }
 
 pub fn read_header(buf: &[u8; HEADER_SIZE]) -> (ProtocolCategory, u16) {
