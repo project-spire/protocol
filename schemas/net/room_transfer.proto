@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package spire.protocol.net;
+option csharp_namespace = "spire.protocol.net";
+
+message RoomTransferStart {
+  uint64 target = 1;
+}
+
+message RoomTransferReady {
+  uint64 target = 1;
+}
+
+message RoomTransferCommit {
+  uint64 target = 1;
+}
