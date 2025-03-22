@@ -12,7 +12,7 @@ message NetProtocol {
     Ping ping = 1;
     Heartbeat heartbeat = 2;
 
-    RoomTransferStart room_transfer_start = 3;
+    RoomTransferBegin room_transfer_begin = 3;
     RoomTransferReady room_transfer_ready = 4;
     RoomTransferCommit room_transfer_commit = 5;
   }

@@ -3,7 +3,7 @@ syntax = "proto3";
 package spire.protocol.net;
 option csharp_namespace = "spire.protocol.net";
 
-message RoomTransferStart {
+message RoomTransferBegin {
   uint64 target = 1;
 }
 
