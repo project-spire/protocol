@@ -38,7 +38,7 @@ pub fn serialize<T: prost::Message>(category: ProtocolCategory, protocol: &T) ->
     }
 
     let mut buf = Vec::with_capacity(HEADER_SIZE + length);
-    write_header(category, length as u16, &mut buf[..HEADER_SIZE].try_into().unwrap());
+    serialize_header(category, length as u16, &mut buf[..HEADER_SIZE].try_into().unwrap());
     if let Err(e) = protocol.encode(&mut buf) {
         return Err(SerializeError::EncodeError(e));
     }
@@ -46,7 +46,7 @@ pub fn serialize<T: prost::Message>(category: ProtocolCategory, protocol: &T) ->
     Ok(buf)
 }
 
-pub fn write_header(
+pub fn serialize_header(
     category: ProtocolCategory,
     length: u16,
     buf: &mut [u8; HEADER_SIZE]
@@ -59,7 +59,7 @@ pub fn write_header(
     buf[3] = length as u8;
 }
 
-pub fn read_header(buf: &[u8; HEADER_SIZE]) -> (ProtocolCategory, u16) {
+pub fn deserialize_header(buf: &[u8; HEADER_SIZE]) -> (ProtocolCategory, u16) {
     let category = match buf[0] {
         1 => ProtocolCategory::Auth,
         2 => ProtocolCategory::Game,
