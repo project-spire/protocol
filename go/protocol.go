@@ -1,4 +1,4 @@
-package util
+package protocol
 
 import (
 	"encoding/binary"
@@ -51,9 +51,9 @@ func SerializeHeader(header ProtocolHeader, buf []byte) error {
 		return errors.New("buffer size is too small")
 	}
 
-	binary.BigEndian.PutUint16(buf[:2], header.length)
-	buf[2] = byte(header.category)
-	//buf[3] = header.reserved
+	buf[0] = byte(header.category)
+	//buf[1] = header.reserved
+	binary.BigEndian.PutUint16(buf[2:4], header.length)
 
 	return nil
 }

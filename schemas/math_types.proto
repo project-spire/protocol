@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package spire.protocol;
 option csharp_namespace = "spire.protocol";
+option go_package = "spire/protocol";
 
 message PPoint2 {
   float x = 1;
