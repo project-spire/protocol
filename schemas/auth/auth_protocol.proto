@@ -4,6 +4,7 @@ import "auth/login.proto";
 
 package spire.protocol.auth;
 option csharp_namespace = "spire.protocol.auth";
+option go_package = "spire/protocol/auth";
 
 message AuthProtocol {
   oneof protocol {
