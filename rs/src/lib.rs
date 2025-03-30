@@ -31,7 +31,7 @@ pub enum SerializeError {
     EncodeError(EncodeError),
 }
 
-pub fn serialize<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Vec<u8>, SerializeError> {
+pub fn serialize_protocol<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Vec<u8>, SerializeError> {
     let length = protocol.encoded_len();
     if length > u16::max as usize {
         return Err(SerializeError::BodyLengthExceeded);
