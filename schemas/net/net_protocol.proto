@@ -11,7 +11,8 @@ option go_package = "spire/protocol/net";
 message NetClientProtocol {
   oneof protocol {
     Ping ping = 1;
-    Heartbeat heartbeat = 2;
+    Pong pong = 2;
+    Heartbeat heartbeat = 3;
 
     RoomTransferRequest room_transfer_request = 9;
     RoomTransferReady room_transfer_ready = 10;
@@ -21,7 +22,8 @@ message NetClientProtocol {
 message NetServerProtocol {
   oneof protocol {
     Ping ping = 1;
-    Heartbeat heartbeat = 2;
+    Pong pong = 2;
+    Heartbeat heartbeat = 3;
 
     RoomTransferRequestResult room_transfer_request_result = 9;
     RoomTransferCommit room_transfer_commit = 10;
