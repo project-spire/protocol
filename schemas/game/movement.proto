@@ -62,7 +62,7 @@ message MovementCommand {
   }
 }
 
-message MovementSync {
+message Movement {
   uint64 entity = 1;
   PMovementState state = 2;
   PMovementMode mode = 3;
@@ -71,7 +71,7 @@ message MovementSync {
   PVector2 velocity = 6;
 }
 
-message MovementSyncList {
-  repeated MovementSync list = 1;
+message MovementSync {
+  repeated Movement movements = 1;
 }
 

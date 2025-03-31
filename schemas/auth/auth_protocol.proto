@@ -6,8 +6,14 @@ package spire.protocol.auth;
 option csharp_namespace = "spire.protocol.auth";
 option go_package = "spire/protocol/auth";
 
-message AuthProtocol {
+message AuthClientProtocol {
   oneof protocol {
     Login login = 1;
+  }
+}
+
+message AuthServerProtocol {
+  oneof protocol {
+    LoginResult login_result = 1;
   }
 }

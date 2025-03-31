@@ -6,9 +6,14 @@ package spire.protocol.game;
 option csharp_namespace = "spire.protocol.game";
 option go_package = "spire/protocol/game";
 
-message GameProtocol {
+message GameClientProtocol {
   oneof protocol {
-    MovementSyncList movement_sync_list = 1;
-    MovementCommand movement_command = 2;
+    MovementCommand movement_command = 1;
+  }
+}
+
+message GameServerProtocol {
+  oneof protocol {
+    MovementSync movement_sync = 1;
   }
 }

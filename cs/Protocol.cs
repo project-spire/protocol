@@ -48,7 +48,7 @@ public static class ProtocolHeader
 
 public static class ProtocolUtil
 {
-    public static byte[] Serialize(ProtocolCategory category, IMessage protocol)
+    public static byte[] SerializeProtocol(ProtocolCategory category, IMessage protocol)
     {
         var length = protocol.CalculateSize();
         if (length > ushort.MaxValue)

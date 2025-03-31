@@ -7,7 +7,3 @@ option go_package = "spire/protocol/net";
 message Ping {
   int64 timestamp = 1;
 }
-
-message Pong {
-  int64 timestamp = 1;
-}

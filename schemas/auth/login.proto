@@ -5,5 +5,14 @@ option csharp_namespace = "spire.protocol.auth";
 option go_package = "spire/protocol/auth";
 
 message Login {
-  string token = 4;
+  string token = 1;
+}
+
+message LoginResult {
+  enum Result {
+    Ok = 0;
+    InvalidToken = 1;
+  }
+  
+  Result result = 1;
 }
