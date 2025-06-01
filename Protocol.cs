@@ -5,10 +5,10 @@ namespace spire.protocol;
 
 public enum ProtocolCategory : byte
 {
-    None = 0,
-    Auth = 1,
-    Game = 2,
-    Net = 3
+    None = 0x00,
+    Auth = 0x01,
+    Game = 0x02,
+    Net = 0x03
 }
 
 public static class ProtocolHeader
