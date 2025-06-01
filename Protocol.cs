@@ -1,7 +1,7 @@
 using System.Buffers;
 using Google.Protobuf;
 
-namespace spire.protocol;
+namespace Spire.Protocol;
 
 public enum ProtocolCategory : byte
 {
