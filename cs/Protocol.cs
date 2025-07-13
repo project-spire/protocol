@@ -14,7 +14,7 @@ public enum ProtocolCategory : byte
 
 public static class ProtocolHeader
 {
-    public const int HeaderSize = 4;
+    public const int Size = 4;
     private const byte Reserved = 0;
 
     public static void Write(ProtocolCategory category, ushort length, Span<byte> buffer)
@@ -54,9 +54,9 @@ public static class ProtocolUtil
         if (length > ushort.MaxValue)
             throw new ArgumentOutOfRangeException($"Requested buffer length {length} exceed {ushort.MaxValue}.");
         
-        var buffer = ArrayPool<byte>.Shared.Rent(ProtocolHeader.HeaderSize + length);
+        var buffer = ArrayPool<byte>.Shared.Rent(ProtocolHeader.Size + length);
         ProtocolHeader.Write(category, (ushort)length, buffer);
-        protocol.WriteTo(buffer.AsSpan()[ProtocolHeader.HeaderSize..]);
+        protocol.WriteTo(buffer.AsSpan()[ProtocolHeader.Size..]);
 
         return buffer;
     }
