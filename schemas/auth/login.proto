@@ -1,8 +1,6 @@
 syntax = "proto3";
 
 package spire.protocol.auth;
-option csharp_namespace = "spire.protocol.auth";
-option go_package = "spire/protocol/auth";
 
 message Login {
   enum Kind {

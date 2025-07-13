@@ -5,8 +5,6 @@ import "net/ping.proto";
 import "net/room_transfer.proto";
 
 package spire.protocol.net;
-option csharp_namespace = "spire.protocol.net";
-option go_package = "spire/protocol/net";
 
 message NetClientProtocol {
   oneof protocol {

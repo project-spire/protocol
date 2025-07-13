@@ -3,8 +3,6 @@ syntax = "proto3";
 import "math_types.proto";
 
 package spire.protocol.game;
-option csharp_namespace = "spire.protocol.game";
-option go_package = "spire/protocol/game";
 
 enum PMovementState {
   Idle = 0;
