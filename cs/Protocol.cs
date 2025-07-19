@@ -1,6 +1,4 @@
 using System;
-using System.Buffers;
-using Google.Protobuf;
 
 namespace Spire.Protocol;
 
@@ -17,10 +15,12 @@ public static class ProtocolHeader
     public const int Size = 4;
     private const byte Reserved = 0;
 
-    public static void Write(ProtocolCategory category, ushort length, Span<byte> buffer)
+    public static void Write(ProtocolCategory category, int length, Span<byte> buffer)
     {
         if (buffer.Length < 4)
-            throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long.");
+            throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long");
+        if (length > ushort.MaxValue)
+            throw new ArgumentOutOfRangeException("Length must be less than 2 bytes");
 
         buffer[0] = (byte)category;
         buffer[1] = Reserved;
@@ -31,7 +31,7 @@ public static class ProtocolHeader
     public static (ProtocolCategory, ushort) Read(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < 4)
-            throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long.");
+            throw new ArgumentOutOfRangeException("Buffer must be at least 4 bytes long");
 
         var category = buffer[0] switch
         {
@@ -43,21 +43,5 @@ public static class ProtocolHeader
         var length = (ushort)((buffer[2] << 8) | buffer[3]);
 
         return (category, length);
-    }
-}
-
-public static class ProtocolUtil
-{
-    public static byte[] SerializeProtocol(ProtocolCategory category, IMessage protocol)
-    {
-        var length = protocol.CalculateSize();
-        if (length > ushort.MaxValue)
-            throw new ArgumentOutOfRangeException($"Requested buffer length {length} exceed {ushort.MaxValue}.");
-        
-        var buffer = ArrayPool<byte>.Shared.Rent(ProtocolHeader.Size + length);
-        ProtocolHeader.Write(category, (ushort)length, buffer);
-        protocol.WriteTo(buffer.AsSpan()[ProtocolHeader.Size..]);
-
-        return buffer;
     }
 }
