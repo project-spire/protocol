@@ -78,29 +78,59 @@ pub mod game {
 
 pub mod convert {
     use crate::*;
-    use nalgebra::{Point2, Vector2};
+    use nalgebra::{Point2, Point3, UnitVector2, Vector2, Vector3};
 
     impl From<Vector2<f32>> for PVector2 {
-        fn from(value: Vector2<f32>) -> Self {
-            PVector2 { x: value.x, y: value.y }
+        fn from(v: Vector2<f32>) -> Self {
+            PVector2 { x: v.x, y: v.y }
         }
     }
 
     impl From<PVector2> for Vector2<f32> {
-        fn from(value: PVector2) -> Self {
-            Vector2::new(value.x, value.y)
+        fn from(v: PVector2) -> Self {
+            Vector2::new(v.x, v.y)
+        }
+    }
+
+    impl From<Vector3<f32>> for PVector3 {
+        fn from(v: Vector3<f32>) -> Self {
+            PVector3 { x: v.x, y: v.y, z: v.z }
+        }
+    }
+
+    impl From<PVector3> for Vector3<f32> {
+        fn from(v: PVector3) -> Self {
+            Vector3::new(v.x, v.y, v.z)
         }
     }
 
     impl From<Point2<f32>> for PPoint2 {
-        fn from(value: Point2<f32>) -> Self {
-            PPoint2 { x: value.x, y: value.y }
+        fn from(p: Point2<f32>) -> Self {
+            PPoint2 { x: p.x, y: p.y }
         }
     }
 
     impl From<PPoint2> for Point2<f32> {
-        fn from(value: PPoint2) -> Self {
-            Point2::new(value.x, value.y)
+        fn from(p: PPoint2) -> Self {
+            Point2::new(p.x, p.y)
+        }
+    }
+
+    impl From<Point3<f32>> for PPoint3 {
+        fn from(p: Point3<f32>) -> Self {
+            PPoint3 { x: p.x, y: p.y, z: p.z }
+        }
+    }
+
+    impl From<PPoint3> for Point3<f32> {
+        fn from(p: PPoint3) -> Self {
+            Point3::new(p.x, p.y, p.z)
+        }
+    }
+
+    impl Into<PVector2> for UnitVector2<f32> {
+        fn into(self) -> PVector2 {
+            Vector2::new(self.x, self.y).into()
         }
     }
 }

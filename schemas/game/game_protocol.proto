@@ -12,6 +12,6 @@ message GameClientProtocol {
 
 message GameServerProtocol {
   oneof protocol {
-    MovementSync movement_sync = 1;
+    MovementSyncs movement_syncs = 1;
   }
 }

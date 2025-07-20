@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "math_types.proto";
+import "game/transform.proto";
 
 package spire.protocol.game;
 
@@ -9,20 +10,7 @@ enum PMovementState {
   Walking = 1;
   Running = 2;
   Rolling = 3;
-}
-
-enum PMovementMode {
-  Standing = 0;
-  Crouching = 1;
-  Crawling = 2;
-  Swimming = 3;
-  Flying = 4;
-}
-
-enum PMovementInterpolation {
-  None = 0;
-  Linear = 1;
-  DeadReckoning = 2;
+  Jumping = 4;
 }
 
 message HaltMovementCommand {}
@@ -39,37 +27,24 @@ message RollMovementCommand {
   PVector2 direction = 1;
 }
 
-message StandMovementCommand {}
-
-message CrouchMovementCommand {}
-
-message CrawlMovementCommand {}
+message JumpMovementCommand {}
 
 message MovementCommand {
   oneof command {
-    // State changes
     HaltMovementCommand halt = 1;
     WalkMovementCommand walk = 2;
     RunMovementCommand run = 3;
     RollMovementCommand roll = 4;
-
-    // Mode changes
-    StandMovementCommand stand = 5;
-    CrouchMovementCommand crouch = 6;
-    CrawlMovementCommand crawl = 7;
   }
 }
 
-message Movement {
+message MovementSync {
   uint64 entity = 1;
   PMovementState state = 2;
-  PMovementMode mode = 3;
-  PMovementInterpolation interpolation = 4;
-  PPoint2 position = 5;
-  PVector2 velocity = 6;
+  PVector2 direction = 3;
+  PTransform transform = 4;
 }
 
-message MovementSync {
-  repeated Movement movements = 1;
+message MovementSyncs {
+  repeated MovementSync syncs = 1;
 }
-
