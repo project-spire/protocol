@@ -6,8 +6,8 @@ public enum ProtocolCategory : byte
 {
     None = 0,
     Auth = 1,
-    Game = 2,
-    Net = 3
+    Net = 2,
+    Game = 3
 }
 
 public static class ProtocolHeader
@@ -36,8 +36,8 @@ public static class ProtocolHeader
         var category = buffer[0] switch
         {
             1 => ProtocolCategory.Auth,
-            2 => ProtocolCategory.Game,
-            3 => ProtocolCategory.Net,
+            2 => ProtocolCategory.Net,
+            3 => ProtocolCategory.Game,
             _ => ProtocolCategory.None
         };
         var length = (ushort)((buffer[2] << 8) | buffer[3]);

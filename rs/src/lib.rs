@@ -1,76 +1,78 @@
+use bytes::{BufMut, Bytes, BytesMut};
+use std::error::Error;
+pub use prost::Message;
+
+pub const PROTOCOL_HEADER_SIZE: usize = 4;
+
+#[derive(Eq, PartialEq, Debug)]
+pub enum ProtocolCategory {
+    Auth = 1,
+    Net = 2,
+    Game = 3,
+}
+
+pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCategory, usize), ()> {
+    let category = match buf[0] {
+        1 => ProtocolCategory::Auth,
+        2 => ProtocolCategory::Net,
+        3 => ProtocolCategory::Game,
+        _ => return Err(()),
+    };
+    let length =  ((buf[2] as usize) << 8) | (buf[3] as usize);
+
+    Ok((category, length))
+}
+
 include!(concat!(env!("OUT_DIR"), "/spire.protocol.rs"));
+
+pub fn encode<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Bytes, std::io::Error> {
+    const RESERVED: u8 = 0u8;
+
+    let length = protocol.encoded_len();
+    if length > u16::MAX as usize {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData, "Protocol too large"));
+    }
+
+    let mut buf = BytesMut::with_capacity(PROTOCOL_HEADER_SIZE + length);
+
+    // Header
+    buf.put_u8(category as u8);
+    buf.put_u8(RESERVED);
+    buf.put_u8((length >> 8) as u8);
+    buf.put_u8(length as u8);
+
+    // Body
+    if let Err(_) = protocol.encode(&mut buf) {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other, "Failed to encode body"));
+    }
+
+    Ok(buf.freeze())
+}
 
 pub mod auth {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.auth.rs"));
-}
 
-pub mod game {
-    include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.rs"));
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+        crate::encode::<T>(crate::ProtocolCategory::Auth, protocol)
+    }
 }
 
 pub mod net {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
-}
 
-pub use prost::Message;
-use prost::EncodeError;
-
-pub const HEADER_SIZE: usize = 4;
-
-#[derive(Eq, PartialEq, Debug)]
-pub enum ProtocolCategory {
-    None = 0,
-    Auth = 1,
-    Game = 2,
-    Net = 3,
-}
-
-pub struct ProtocolHeader {
-    pub category: ProtocolCategory,
-    pub length: usize,
-}
-
-#[derive(Debug, Clone)]
-pub enum SerializationError {
-    BodyLengthExceeded,
-    EncodeError(EncodeError),
-}
-
-pub fn serialize_protocol<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Vec<u8>, SerializationError> {
-    let length = protocol.encoded_len();
-    if length > u16::max as usize {
-        return Err(SerializationError::BodyLengthExceeded);
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+        crate::encode::<T>(crate::ProtocolCategory::Net, protocol)
     }
+}
 
-    let header = ProtocolHeader { category, length };
-    let mut buf = Vec::with_capacity(HEADER_SIZE + length);
-    serialize_header(header, &mut buf[..HEADER_SIZE].try_into().unwrap());
-    if let Err(e) = protocol.encode(&mut buf) {
-        return Err(SerializationError::EncodeError(e));
+pub mod game {
+    include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.rs"));
+
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+        crate::encode::<T>(crate::ProtocolCategory::Game, protocol)
     }
-
-    Ok(buf)
-}
-
-pub fn serialize_header(header: ProtocolHeader, buf: &mut [u8; HEADER_SIZE]) {
-    const RESERVED: u8 = 0u8;
-
-    buf[0] = header.category as u8;
-    buf[1] = RESERVED;
-    buf[2] = (header.length >> 8) as u8;
-    buf[3] = header.length as u8;
-}
-
-pub fn deserialize_header(buf: &[u8; HEADER_SIZE]) -> ProtocolHeader {
-    let category = match buf[0] {
-        1 => ProtocolCategory::Auth,
-        2 => ProtocolCategory::Game,
-        3 => ProtocolCategory::Net,
-        _ => ProtocolCategory::None,
-    };
-    let length =  ((buf[2] as usize) << 8) | (buf[3] as usize);
-
-    ProtocolHeader { category, length }
 }
 
 pub mod convert {
