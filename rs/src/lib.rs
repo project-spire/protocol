@@ -11,12 +11,13 @@ pub enum ProtocolCategory {
     Game = 3,
 }
 
-pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCategory, usize), ()> {
+pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCategory, usize), std::io::Error> {
     let category = match buf[0] {
         1 => ProtocolCategory::Auth,
         2 => ProtocolCategory::Net,
         3 => ProtocolCategory::Game,
-        _ => return Err(()),
+        _ => return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData, "Invalid protocol category")),
     };
     let length =  ((buf[2] as usize) << 8) | (buf[3] as usize);
 
