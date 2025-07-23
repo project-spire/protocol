@@ -1,29 +1,19 @@
 syntax = "proto3";
 
-import "net/heartbeat.proto";
 import "net/ping.proto";
-import "net/room_transfer.proto";
 
 package spire.protocol.net;
 
 message NetClientProtocol {
   oneof protocol {
-    Ping ping = 1;
-    Pong pong = 2;
-    Heartbeat heartbeat = 3;
-
-    RoomTransferRequest room_transfer_request = 9;
-    RoomTransferReady room_transfer_ready = 10;
+    PingProtocol ping = 1;
+    PongProtocol pong = 2;
   }
 }
 
 message NetServerProtocol {
   oneof protocol {
-    Ping ping = 1;
-    Pong pong = 2;
-    Heartbeat heartbeat = 3;
-
-    RoomTransferRequestResult room_transfer_request_result = 9;
-    RoomTransferCommit room_transfer_commit = 10;
+    PingProtocol ping = 1;
+    PongProtocol pong = 2;
   }
 }

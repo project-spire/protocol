@@ -1,17 +1,18 @@
 syntax = "proto3";
 
-import "game/movement.proto";
+import "game/movement/movement_command.proto";
+import "game/movement/movement_sync.proto";
 
 package spire.protocol.game;
 
 message GameClientProtocol {
   oneof protocol {
-    MovementCommand movement_command = 1;
+    MovementCommandProtocol movement_command = 1;
   }
 }
 
 message GameServerProtocol {
   oneof protocol {
-    MovementSyncs movement_syncs = 1;
+    MovementSyncProtocol movement_syncs = 1;
   }
 }

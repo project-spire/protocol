@@ -104,27 +104,27 @@ pub mod convert {
         }
     }
 
-    impl From<Point2<f32>> for PPoint2 {
+    impl From<Point2<f32>> for PVector2 {
         fn from(p: Point2<f32>) -> Self {
-            PPoint2 { x: p.x, y: p.y }
+            PVector2 { x: p.x, y: p.y }
         }
     }
 
-    impl From<PPoint2> for Point2<f32> {
-        fn from(p: PPoint2) -> Self {
-            Point2::new(p.x, p.y)
+    impl From<PVector2> for Point2<f32> {
+        fn from(v: PVector2) -> Self {
+            Point2::new(v.x, v.y)
         }
     }
 
-    impl From<Point3<f32>> for PPoint3 {
+    impl From<Point3<f32>> for PVector3 {
         fn from(p: Point3<f32>) -> Self {
-            PPoint3 { x: p.x, y: p.y, z: p.z }
+            PVector3 { x: p.x, y: p.y, z: p.z }
         }
     }
 
-    impl From<PPoint3> for Point3<f32> {
-        fn from(p: PPoint3) -> Self {
-            Point3::new(p.x, p.y, p.z)
+    impl From<PVector3> for Point3<f32> {
+        fn from(v: PVector3) -> Self {
+            Point3::new(v.x, v.y, v.z)
         }
     }
 

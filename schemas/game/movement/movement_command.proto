@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "math_types.proto";
+
+package spire.protocol.game;
+
+message HaltMovementCommand {}
+
+message WalkMovementCommand {
+  PVector2 direction = 1;
+}
+
+message RunMovementCommand {
+  PVector2 direction = 1;
+}
+
+message RollMovementCommand {
+  PVector2 direction = 1;
+}
+
+message JumpMovementCommand {}
+
+message MovementCommandProtocol {
+  int64 timestamp = 1;
+
+  oneof command {
+    HaltMovementCommand halt = 2;
+    WalkMovementCommand walk = 3;
+    RunMovementCommand run = 4;
+    RollMovementCommand roll = 5;
+  }
+}

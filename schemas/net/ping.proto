@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package spire.protocol.net;
 
-message Ping {
+message PingProtocol {
   int64 timestamp = 1;
 }
 
-message Pong {
+message PongProtocol {
   int64 timestamp = 1;
 }
