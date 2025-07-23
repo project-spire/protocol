@@ -128,9 +128,20 @@ pub mod convert {
         }
     }
 
-    impl Into<PVector2> for UnitVector2<f32> {
-        fn into(self) -> PVector2 {
-            Vector2::new(self.x, self.y).into()
+    impl From<PVector2> for UnitVector2<f32> {
+        fn from(v: PVector2) -> Self {
+            let v = Vector2::new(v.x, v.y);
+            if v.x == 0.0 && v.y == 0.0 {
+                UnitVector2::new_normalize(Vector2::new(1.0, 0.0))
+            } else {
+                UnitVector2::new_normalize(v)
+            }
+        }
+    }
+
+    impl From<UnitVector2<f32>> for PVector2 {
+        fn from(v: UnitVector2<f32>) -> Self {
+            PVector2 { x: v.x, y: v.y }
         }
     }
 }
