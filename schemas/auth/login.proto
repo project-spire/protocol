@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "uuid.proto";
+
 package spire.protocol.auth;
 
 message Login {
@@ -10,7 +12,7 @@ message Login {
 
   Kind kind = 1;
   string token = 2;
-  int64 character_id = 3;
+  Uuid character_id = 3;
 }
 
 message LoginResult {
