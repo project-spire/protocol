@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 prost = { workspace = true }
 nalgebra = { workspace = true }
+uuid = { workspace = true }
 bytes = "1.10.1"
 
 [build-dependencies]

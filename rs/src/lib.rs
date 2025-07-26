@@ -1,5 +1,5 @@
 use bytes::{BufMut, Bytes, BytesMut};
-use std::error::Error;
+use std::fmt::{Display, Formatter};
 pub use prost::Message;
 
 pub const PROTOCOL_HEADER_SIZE: usize = 4;
@@ -11,13 +11,12 @@ pub enum ProtocolCategory {
     Game = 3,
 }
 
-pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCategory, usize), std::io::Error> {
+pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCategory, usize), ProtocolError> {
     let category = match buf[0] {
         1 => ProtocolCategory::Auth,
         2 => ProtocolCategory::Net,
         3 => ProtocolCategory::Game,
-        _ => return Err(std::io::Error::new(
-            std::io::ErrorKind::InvalidData, "Invalid protocol category")),
+        _ => return Err(ProtocolError::InvalidHeader),
     };
     let length =  ((buf[2] as usize) << 8) | (buf[3] as usize);
 
@@ -26,13 +25,12 @@ pub fn decode_header(buf: &[u8; PROTOCOL_HEADER_SIZE]) -> Result<(ProtocolCatego
 
 include!(concat!(env!("OUT_DIR"), "/spire.protocol.rs"));
 
-pub fn encode<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Bytes, std::io::Error> {
+pub fn encode<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Result<Bytes, ProtocolError> {
     const RESERVED: u8 = 0u8;
 
     let length = protocol.encoded_len();
     if length > u16::MAX as usize {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::InvalidData, "Protocol too large"));
+        return Err(ProtocolError::EncodeError);
     }
 
     let mut buf = BytesMut::with_capacity(PROTOCOL_HEADER_SIZE + length);
@@ -45,33 +43,57 @@ pub fn encode<T: prost::Message>(category: ProtocolCategory, protocol: &T) -> Re
 
     // Body
     if let Err(_) = protocol.encode(&mut buf) {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other, "Failed to encode body"));
+        return Err(ProtocolError::EncodeError);
     }
 
     Ok(buf.freeze())
 }
 
+#[derive(Debug)]
+pub enum ProtocolError {
+    InvalidHeader,
+    InvalidData,
+    EncodeError,
+}
+
+impl Display for ProtocolError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ProtocolError::InvalidHeader => write!(f, "Invalid protocol header"),
+            ProtocolError::InvalidData => write!(f, "Invalid protocol data"),
+            ProtocolError::EncodeError => write!(f, "Failed to encode protocol"),
+        }
+    }
+}
+
+impl std::error::Error for ProtocolError {}
+
 pub mod auth {
+    use crate::ProtocolError;
+
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.auth.rs"));
 
-    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, ProtocolError> {
         crate::encode::<T>(crate::ProtocolCategory::Auth, protocol)
     }
 }
 
 pub mod net {
+    use crate::ProtocolError;
+
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
 
-    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, ProtocolError> {
         crate::encode::<T>(crate::ProtocolCategory::Net, protocol)
     }
 }
 
 pub mod game {
+    use crate::ProtocolError;
+
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.rs"));
 
-    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, std::io::Error> {
+    pub fn encode<T: prost::Message>(protocol: &T) -> Result<bytes::Bytes, ProtocolError> {
         crate::encode::<T>(crate::ProtocolCategory::Game, protocol)
     }
 }
@@ -142,6 +164,19 @@ pub mod convert {
     impl From<UnitVector2<f32>> for PVector2 {
         fn from(v: UnitVector2<f32>) -> Self {
             PVector2 { x: v.x, y: v.y }
+        }
+    }
+
+    impl From<Uuid> for uuid::Uuid {
+        fn from(value: Uuid) -> Self {
+            uuid::Uuid::from_u64_pair(value.high, value.low)
+        }
+    }
+
+    impl From<uuid::Uuid> for Uuid {
+        fn from(value: uuid::Uuid) -> Self {
+            let (high, low) = value.as_u64_pair();
+            Uuid { high, low }
         }
     }
 }
