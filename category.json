@@ -1,0 +1,5 @@
+[
+    { "name": "Auth", "value": 1 },
+    { "name": "Net", "value": 2 },
+    { "name": "Game", "value": 3 }
+]
