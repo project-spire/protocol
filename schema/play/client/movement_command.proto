@@ -1,21 +1,21 @@
 syntax = "proto3";
 
-import "math_types.proto";
+import "vector.proto";
 
-package spire.protocol.game;
+package spire.protocol.play;
 
 message HaltMovementCommand {}
 
 message WalkMovementCommand {
-  PVector2 direction = 1;
+  Vector2 direction = 1;
 }
 
 message RunMovementCommand {
-  PVector2 direction = 1;
+  Vector2 direction = 1;
 }
 
 message RollMovementCommand {
-  PVector2 direction = 1;
+  Vector2 direction = 1;
 }
 
 message JumpMovementCommand {}

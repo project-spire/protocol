@@ -4,7 +4,7 @@ import "uuid.proto";
 
 package spire.protocol.auth;
 
-message Login {
+message LoginProtocol {
   enum Kind {
     Enter = 0;
     Transfer = 1;
@@ -13,13 +13,4 @@ message Login {
   Kind kind = 1;
   string token = 2;
   Uuid character_id = 3;
-}
-
-message LoginResult {
-  enum Result {
-    Ok = 0;
-    InvalidToken = 1;
-  }
-  
-  Result result = 1;
 }

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package spire.protocol.auth;
+
+enum ClientProtocol {
+  Login = 0;
+}
+
+enum ServerProtocol {
+  LoginResult = 0;
+}

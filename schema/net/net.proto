@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package spire.protocol.net;
+
+enum ClientProtocol {
+  Pong = 0;
+}
+
+enum ServerProtocol {
+  Ping = 0;
+}

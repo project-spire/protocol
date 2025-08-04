@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+import "vector.proto";
+
+package spire.protocol.play;
+
+message MovementState {
+  enum Motion {
+    Idle = 0;
+    Walking = 1;
+    Running = 2;
+    Rolling = 3;
+    Jumping = 4;
+  }
+
+  uint64 entity = 1;
+  Motion motion = 2;
+  Vector3 position = 3;
+  Vector2 direction = 4;
+}
+
+message MovementSyncProtocol {
+  int64 timestamp = 1;
+  repeated MovementState states = 2;
+}
