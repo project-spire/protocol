@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package spire.protocol.auth;
 
-message LoginResultProtocol {
+message LoginResult {
   enum Result {
     Ok = 0;
     InvalidToken = 1;

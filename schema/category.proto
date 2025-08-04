@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package spire.protocol;
-
-enum Category {
-  Net = 0;
-  Auth = 1;
-  Play = 2;
-}

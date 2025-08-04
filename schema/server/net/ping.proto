@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package spire.protocol.net;
 
-message PingProtocol {
+message Ping {
   int64 timestamp = 1;
 }

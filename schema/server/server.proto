@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package spire.protocol;
+
+enum ServerProtocol {
+  // auth
+  LoginResult = 0;
+
+  // net
+  Ping = 1000;
+
+  // play
+  MovementSync = 2000;
+}

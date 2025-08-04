@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package spire.protocol;
+
+enum ClientProtocol {
+  // auth
+  Login = 0;
+
+  // net
+  Pong = 1000;
+
+  // play
+  Movement = 2000;
+}

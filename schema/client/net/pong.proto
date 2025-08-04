@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package spire.protocol.net;
 
-message PongProtocol {
+message Pong {
   int64 timestamp = 1;
 }

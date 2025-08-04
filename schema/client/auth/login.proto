@@ -4,7 +4,7 @@ import "uuid.proto";
 
 package spire.protocol.auth;
 
-message LoginProtocol {
+message Login {
   enum Kind {
     Enter = 0;
     Transfer = 1;

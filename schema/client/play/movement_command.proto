@@ -20,7 +20,7 @@ message RollMovementCommand {
 
 message JumpMovementCommand {}
 
-message MovementCommandProtocol {
+message MovementCommand {
   int64 timestamp = 1;
 
   oneof command {

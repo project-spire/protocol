@@ -19,7 +19,7 @@ message MovementState {
   Vector2 direction = 4;
 }
 
-message MovementSyncProtocol {
+message MovementSync {
   int64 timestamp = 1;
   repeated MovementState states = 2;
 }
