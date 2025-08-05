@@ -10,5 +10,5 @@ enum ClientProtocol {
   Pong = 1000;
 
   // play
-  Movement = 2000;
+  MovementCommand = 2000;
 }
