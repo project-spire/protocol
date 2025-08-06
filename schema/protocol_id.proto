@@ -2,13 +2,16 @@ syntax = "proto3";
 
 package spire.protocol;
 
-enum ClientProtocol {
+enum ProtocolId {
   // auth
   Login = 0;
+  LoginResult = 1;
 
   // net
-  Pong = 1000;
+  Ping = 1000;
+  Pong = 1001;
 
   // play
   MovementCommand = 2000;
+  MovementSync = 2001;
 }
