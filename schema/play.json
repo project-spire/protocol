@@ -1,0 +1,8 @@
+{
+    "category": "play",
+    "offset": 2000,
+    "protocols": [
+        "MovementCommand",
+        "MovementSync"
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "category": "net",
+    "offset": 1000,
+    "protocols": [
+        "Ping",
+        "Pong"
+    ]
+}
