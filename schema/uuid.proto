@@ -3,6 +3,6 @@ syntax = "proto3";
 package spire.protocol;
 
 message Uuid {
-  uint64 high = 1;
-  uint64 low = 2;
+    uint64 high = 1;
+    uint64 low = 2;
 }
