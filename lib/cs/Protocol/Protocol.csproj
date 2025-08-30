@@ -5,7 +5,8 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Spire.Protocol</RootNamespace>
         
-        <SchemaDirectory>$(MSBuildProjectDirectory)\..\..\schema</SchemaDirectory>
+        <SchemaDirectory>$(MSBuildProjectDirectory)\..\..\..\schema</SchemaDirectory>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
     
     <ItemGroup>
@@ -21,14 +22,18 @@
         <ProjectReference Include="..\ProtocolGenerator\ProtocolGenerator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false" />
-
-<!--        <PackageReference Include="Humanizer.Core" Version="2.14.1" -->
-<!--                          GeneratePathProperty="true" -->
-<!--                          PrivateAssets="all" />-->
-        
         <CompilerVisibleProperty Include="SchemaDirectory" />
         <AdditionalFiles Include="$(SchemaDirectory)\game\*.json" />
     </ItemGroup>
+    
+    <Target Name="DebugSchemaDirectory" BeforeTargets="Build">
+        <Message Text="SchemaDirectory: $(SchemaDirectory)" Importance="high" />
+        <ItemGroup>
+            <JsonFilesFound Include="$(SchemaDirectory)\game\*.json" />
+        </ItemGroup>
+        <Message Text="Found JSON files: @(JsonFilesFound)" Importance="high" />
+        <Message Text="AdditionalFiles: @(AdditionalFiles)" Importance="high" />
+    </Target>
     
     <ItemGroup>
         <Protobuf Include="$(SchemaDirectory)\*.proto"

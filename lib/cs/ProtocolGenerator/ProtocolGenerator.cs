@@ -12,14 +12,6 @@ namespace Spire.ProtocolGenerator;
 public class ProtocolGenerator : IIncrementalGenerator
 {
     private const string Tab = "    ";
-    
-    private static readonly DiagnosticDescriptor InfoLog = new(
-        id: "GEN001",
-        title: "Generator Info",
-        messageFormat: "{0}",
-        category: "SourceGenerator",
-        DiagnosticSeverity.Info,
-        isEnabledByDefault: true);
 
     private record JsonFileData(string Path, string Content)
     {
@@ -51,10 +43,12 @@ public class ProtocolGenerator : IIncrementalGenerator
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
         
-        context.ReportDiagnostic(Diagnostic.Create(InfoLog, Location.None, "JSON files..."));
+        ReportInfo(context, "GEN000", "Generate Start", "Generating...");
+        
         foreach (var file in jsonFiles)
         {
-            context.ReportDiagnostic(Diagnostic.Create(InfoLog, Location.None, $"JSON file: {file.Path}"));
+            ReportInfo(context, "GEN000", "Generate Start", 
+                $"Generating from {file.Path}");
             
             try
             {
@@ -74,7 +68,7 @@ public class ProtocolGenerator : IIncrementalGenerator
         if (categories.Count == 0)
         {
             ReportWarning(context, "SPG003", "No Schema Files",
-                $"No JSON schema files found");
+                "No JSON schema files found");
             return;
         }
         
@@ -146,8 +140,16 @@ public class ProtocolException(string message) : Exception(message);
 {string.Join("\n", cases)}
 ";
     }
+
+    private static void ReportInfo(SourceProductionContext context, string id, string title, string message)
+    {
+        context.ReportDiagnostic(Diagnostic.Create(
+            new DiagnosticDescriptor(id, title, message, "Configuration", 
+                DiagnosticSeverity.Info, isEnabledByDefault: true),
+            Location.None));
+    }
     
-    private void ReportError(SourceProductionContext context, string id, string title, string message)
+    private static void ReportError(SourceProductionContext context, string id, string title, string message)
     {
         context.ReportDiagnostic(Diagnostic.Create(
             new DiagnosticDescriptor(id, title, message, "Configuration", 
@@ -155,7 +157,7 @@ public class ProtocolException(string message) : Exception(message);
             Location.None));
     }
 
-    private void ReportWarning(SourceProductionContext context, string id, string title, string message)
+    private static void ReportWarning(SourceProductionContext context, string id, string title, string message)
     {
         context.ReportDiagnostic(Diagnostic.Create(
             new DiagnosticDescriptor(id, title, message, "Configuration", 
