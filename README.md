@@ -3,20 +3,10 @@
 ## Protocol Header Format
 
 * Total 4 bytes.
-* Length does not include header.
+* Length does not include header size.
+* Protocol Id is defined manually. See [schema/game/auth.json](schema/game/auth.json) for reference.
 
-| Bytes | Content  |
-|------:|----------|
-|     0 | Category |
-|     1 | Reserved |
-|   2~3 | Length   |
-
-
-## Protocol Category
-
-| Value | Category |
-|------:|----------|
-|     0 | None     |
-|     1 | Auth     |
-|     2 | Net      |
-|     3 | Game     |
+| Bytes | Content     |
+|------:|-------------|
+|   0~1 | Length      |
+|   2~3 | Protocol Id |
