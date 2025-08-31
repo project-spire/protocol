@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "uuid.proto";
+
+package spire.protocol.lobby;
+
+service DevAuth {
+    rpc GetDevAccount (DevAccountRequest) returns (DevAccountResponse);
+    rpc GetToken (DevTokenRequest) returns (DevTokenResponse);
+}
+
+message DevAccountRequest {
+    string dev_id = 1;
+}
+
+message DevAccountResponse {
+    Uuid account_id = 1;
+}
+
+message DevTokenRequest {
+    Uuid account_id = 1;
+}
+
+message DevTokenResponse {
+    string token = 1;
+}
