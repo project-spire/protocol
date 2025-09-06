@@ -53,16 +53,3 @@ impl From<Vector3<f32>> for crate::Vector3 {
         crate::Vector3 { x: value.x, y: value.y, z: value.z }
     }
 }
-
-impl From<crate::Uuid> for uuid::Uuid {
-    fn from(value: crate::Uuid) -> Self {
-        uuid::Uuid::from_u64_pair(value.high, value.low)
-    }
-}
-
-impl From<uuid::Uuid> for crate::Uuid {
-    fn from(value: uuid::Uuid) -> Self {
-        let (high, low) = value.as_u64_pair();
-        crate::Uuid { high, low }
-    }
-}

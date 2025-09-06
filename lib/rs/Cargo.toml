@@ -9,7 +9,6 @@ nalgebra = { workspace = true }
 prost = { workspace = true }
 tonic = { workspace = true }
 tonic-prost = "*"
-uuid = { workspace = true }
 
 [build-dependencies]
 glob = "0.3"

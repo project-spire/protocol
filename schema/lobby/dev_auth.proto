@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "uuid.proto";
-
 package spire.protocol.lobby;
 
 service DevAuth {
@@ -14,11 +12,11 @@ message DevAccountRequest {
 }
 
 message DevAccountResponse {
-    Uuid account_id = 1;
+    uint64 account_id = 1;
 }
 
 message DevTokenRequest {
-    Uuid account_id = 1;
+    uint64 account_id = 1;
 }
 
 message DevTokenResponse {
