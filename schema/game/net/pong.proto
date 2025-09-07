@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package spire.protocol.net;
+package spire.protocol.game.net;
 
 message Pong {
   int64 timestamp = 1;

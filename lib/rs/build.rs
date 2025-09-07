@@ -106,11 +106,11 @@ fn generate_game_impl_code(schema_dir: &PathBuf) -> Result<(), Box<dyn std::erro
         r#"// Generated file
 
 #[derive(Debug)]
-pub enum Protocol {{
+pub enum GameProtocol {{
 {enums_code}
 }}
 
-impl Protocol {{
+impl GameProtocol {{
     pub fn decode(id: u16, data: bytes::Bytes) -> Result<Self, Box<dyn std::error::Error>> {{
         Ok(match id {{
 {decode_matches_code}
@@ -137,7 +137,7 @@ impl std::fmt::Display for InvalidProtocolId {{
     );
 
     let out_dir = env::var("OUT_DIR").unwrap();
-    let gen_file = PathBuf::from(&out_dir).join("spire.protocol.impl.rs");
+    let gen_file = PathBuf::from(&out_dir).join("spire.protocol.game.impl.rs");
 
     fs::write(gen_file, &code)?;
 

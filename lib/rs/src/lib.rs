@@ -3,18 +3,18 @@ include!(concat!(env!("OUT_DIR"), "/spire.protocol.rs"));
 pub mod game {
     use super::*;
 
-    include!(concat!(env!("OUT_DIR"), "/spire.protocol.impl.rs"));
+    include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.impl.rs"));
 
     pub mod auth {
-        include!(concat!(env!("OUT_DIR"), "/spire.protocol.auth.rs"));
+        include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.auth.rs"));
     }
 
     pub mod net {
-        include!(concat!(env!("OUT_DIR"), "/spire.protocol.net.rs"));
+        include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.net.rs"));
     }
 
     pub mod play {
-        include!(concat!(env!("OUT_DIR"), "/spire.protocol.play.rs"));
+        include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.play.rs"));
     }
 
     use bytes::{BufMut, Bytes, BytesMut};

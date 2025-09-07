@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package spire.protocol.auth;
+package spire.protocol.game.auth;
 
 message LoginResult {
   enum Result {

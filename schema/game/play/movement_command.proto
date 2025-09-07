@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "vector.proto";
 
-package spire.protocol.play;
+package spire.protocol.game.play;
 
 message HaltMovementCommand {}
 
