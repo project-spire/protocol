@@ -118,7 +118,7 @@ public record {recordName}({categoryName}.{protocol} Value) : IProtocol
         return $@"// Generated file
 using Google.Protobuf;
 
-namespace Spire.Protocol;
+namespace Spire.Protocol.Game;
 
 public interface IProtocol
 {{
