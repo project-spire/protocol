@@ -106,11 +106,11 @@ fn generate_game_impl_code(schema_dir: &PathBuf) -> Result<(), Box<dyn std::erro
         r#"// Generated file
 
 #[derive(Debug)]
-pub enum GameProtocol {{
+pub enum Protocol {{
 {enums_code}
 }}
 
-impl GameProtocol {{
+impl Protocol {{
     pub fn decode(id: u16, data: bytes::Bytes) -> Result<Self, Box<dyn std::error::Error>> {{
         Ok(match id {{
 {decode_matches_code}
