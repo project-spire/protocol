@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "character.proto";
+import "race.gen.proto";
 
 package spire.protocol.lobby;
 
@@ -11,14 +12,13 @@ service Characters {
     rpc DeleteCharacter (DeleteCharacterRequest) returns (DeleteCharacterResponse);
 }
 
-//message ListCharactersRequest {}
-
 message ListCharactersResponse {
     repeated Character characters = 1;
 }
 
 message CreateCharacterRequest {
     string name = 1;
+    Race race = 2;
 }
 
 message CreateCharacterResponse {
