@@ -1,0 +1,9 @@
+// This is a generated file. DO NOT MODIFY.
+syntax = "proto3";
+
+package spire.protocol;
+
+enum Race {
+    Human = 0;
+    Orc = 1;
+}

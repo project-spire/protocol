@@ -3,22 +3,22 @@ syntax = "proto3";
 package spire.protocol.lobby;
 
 service DevAuth {
-    rpc GetDevAccount (DevAccountRequest) returns (DevAccountResponse);
-    rpc GetToken (DevTokenRequest) returns (DevTokenResponse);
+    rpc GetDevAccount (GetDevAccountRequest) returns (GetDevAccountResponse);
+    rpc GetDevToken (GetDevTokenRequest) returns (GetDevTokenResponse);
 }
 
-message DevAccountRequest {
+message GetDevAccountRequest {
     string dev_id = 1;
 }
 
-message DevAccountResponse {
+message GetDevAccountResponse {
     int64 account_id = 1;
 }
 
-message DevTokenRequest {
+message GetDevTokenRequest {
     int64 account_id = 1;
 }
 
-message DevTokenResponse {
+message GetDevTokenResponse {
     string token = 1;
 }
