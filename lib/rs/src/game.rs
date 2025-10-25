@@ -12,10 +12,10 @@ pub mod play {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.play.rs"));
 }
 
+use std::any::Any;
+
 use bytes::{BufMut, Bytes, BytesMut};
 use prost::Message;
-
-pub const HEADER_SIZE: usize = 4;
 
 pub struct Header {
     pub length: usize,
@@ -23,9 +23,13 @@ pub struct Header {
 }
 
 impl Header {
+    pub const fn size() -> usize {
+        4
+    }
+
     pub fn encode(buf: &mut BytesMut, length: usize, id: u16) -> Result<(), Error> {
-        if buf.remaining_mut() < HEADER_SIZE {
-            return Err(Error::NotEnoughBuffer(buf.remaining_mut(), HEADER_SIZE));
+        if buf.remaining_mut() < Self::size() {
+            return Err(Error::NotEnoughBuffer(buf.remaining_mut(), Self::size()));
         }
 
         buf.put_u8((length >> 8) as u8);
@@ -36,7 +40,7 @@ impl Header {
         Ok(())
     }
 
-    pub fn decode(buf: &[u8; HEADER_SIZE]) -> Result<Self, Error> {
+    pub fn decode(buf: &[u8; Self::size()]) -> Result<Self, Error> {
         let length = ((buf[0] as usize) << 8) | (buf[1] as usize);
         let protocol = ((buf[2] as u16) << 8) | (buf[3] as u16);
 
@@ -47,17 +51,23 @@ impl Header {
     }
 }
 
-pub trait Protocolic: Sized {
+pub trait Protocol: Any {
     fn protocol_id(&self) -> u16;
+    
+    fn handle(&self) {
+        unimplemented!("Protocol handler for id {} is not implemented", self.protocol_id());
+    }
+    
+    fn as_any(&self) -> &dyn Any;
 }
 
-pub fn encode(protocol: &(impl prost::Message + Protocolic)) -> Result<Bytes, Error> {
+pub fn encode(protocol: &(impl prost::Message + Protocol)) -> Result<Bytes, Error> {
     let length = protocol.encoded_len();
     if length > u16::MAX as usize {
         return Err(Error::ProtocolLength(length));
     }
 
-    let mut buf = BytesMut::with_capacity(HEADER_SIZE + length);
+    let mut buf = BytesMut::with_capacity(Header::size() + length);
 
     Header::encode(&mut buf, length, protocol.protocol_id())?;
     protocol.encode(&mut buf)?;
