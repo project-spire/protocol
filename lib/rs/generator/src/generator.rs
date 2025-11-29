@@ -134,14 +134,14 @@ impl crate::game::Protocol for {protocol_full_name} {{
             }
 
             protocol_handles.push(format!(
-                "{TAB}{TAB}{} => {protocol_full_name}::decode(data)?.handle(ctx),",
+                "{TAB}{TAB}{} => {protocol_full_name}::decode(data)?.handle(ctx).await,",
                 entry.number,
             ));
         }
 
         let code = format!(r#"use prost::Message;
 
-pub fn decode_and_handle(
+pub async fn decode_and_handle(
     id: protocol::game::ProtocolId,
     data: bytes::Bytes,
     ctx: &crate::net::session::SessionContext,
