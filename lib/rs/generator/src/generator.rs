@@ -99,7 +99,7 @@ impl Generator {
 
             protocol_impls.push(format!(r#"
 impl crate::game::Protocol for {protocol_full_name} {{
-    fn protocol_id(&self) -> u16 {{ {protocol_number} }}
+    fn protocol_id(&self) -> crate::game::ProtocolId {{ {protocol_number} }}
 }}
 "#,
             protocol_number = entry.number,
@@ -127,22 +127,22 @@ impl crate::game::Protocol for {protocol_full_name} {{
             if !entry.protocol.handle {
                 continue;
             }
-            
+
             match &entry.protocol.target {
                 ProtocolTarget::Server | ProtocolTarget::All => {},
                 _ => continue,
             }
-            
+
             protocol_handles.push(format!(
                 "{TAB}{TAB}{} => {protocol_full_name}::decode(data)?.handle(ctx),",
                 entry.number,
-            )); 
+            ));
         }
 
         let code = format!(r#"use prost::Message;
 
 pub fn decode_and_handle(
-    id: u16,
+    id: protocol::game::ProtocolId,
     data: bytes::Bytes,
     ctx: &crate::net::session::SessionContext,
 ) -> Result<(), protocol::game::Error> {{

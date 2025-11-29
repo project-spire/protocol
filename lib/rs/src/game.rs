@@ -14,13 +14,15 @@ pub mod play {
 
 use bytes::{BufMut, Bytes, BytesMut};
 
+pub type ProtocolId = u16;
+
 pub struct Header {
     pub length: usize,
-    pub id: u16,
+    pub id: ProtocolId,
 }
 
 pub trait Protocol {
-    fn protocol_id(&self) -> u16;
+    fn protocol_id(&self) -> ProtocolId;
 }
 
 impl Header {
@@ -28,7 +30,7 @@ impl Header {
         4
     }
 
-    pub fn encode(buf: &mut BytesMut, length: usize, id: u16) -> Result<(), Error> {
+    pub fn encode(buf: &mut BytesMut, length: usize, id: ProtocolId) -> Result<(), Error> {
         if buf.remaining_mut() < Self::size() {
             return Err(Error::NotEnoughBuffer(buf.remaining_mut(), Self::size()));
         }
@@ -72,7 +74,7 @@ pub enum Error {
     ProtocolLength(usize),
 
     #[error("Invalid protocol ID: {0}")]
-    ProtocolId(u16),
+    ProtocolId(ProtocolId),
 
     #[error("Not enough buffer size {0} for {1}")]
     NotEnoughBuffer(usize, usize),
@@ -84,5 +86,5 @@ pub enum Error {
     Decode(#[from] prost::DecodeError),
 
     #[error("Unhandled protocol id: {0}")]
-    UnhandledProtocol(u16),
+    UnhandledProtocol(ProtocolId),
 }
