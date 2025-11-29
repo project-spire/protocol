@@ -12,14 +12,15 @@ pub mod play {
     include!(concat!(env!("OUT_DIR"), "/spire.protocol.game.play.rs"));
 }
 
-use std::any::Any;
-
 use bytes::{BufMut, Bytes, BytesMut};
-use prost::Message;
 
 pub struct Header {
     pub length: usize,
     pub id: u16,
+}
+
+pub trait Protocol {
+    fn protocol_id(&self) -> u16;
 }
 
 impl Header {
@@ -49,16 +50,6 @@ impl Header {
             id: protocol,
         })
     }
-}
-
-pub trait Protocol: Any {
-    fn protocol_id(&self) -> u16;
-    
-    fn handle(&self) {
-        unimplemented!("Protocol handler for id {} is not implemented", self.protocol_id());
-    }
-    
-    fn as_any(&self) -> &dyn Any;
 }
 
 pub fn encode(protocol: &(impl prost::Message + Protocol)) -> Result<Bytes, Error> {

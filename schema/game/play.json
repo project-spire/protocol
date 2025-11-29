@@ -1,8 +1,15 @@
 {
+    "$schema": "syntax/category.json",
     "category": "play",
     "offset": 2000,
     "protocols": [
-        "MovementCommand",
-        "MovementSync"
+        {
+            "protocol": "MovementCommand",
+            "target": "server"
+        },
+        {
+            "protocol": "MovementSync",
+            "target": "client"
+        }
     ]
 }

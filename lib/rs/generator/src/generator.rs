@@ -9,21 +9,38 @@ use crate::*;
 pub struct Generator {
     config: Config,
     categories: Vec<Category>,
-    protocols: Vec<Protocol>,
+    protocol_entries: Vec<ProtocolEntry>,
 }
 
 #[derive(Debug, Deserialize)]
 struct Category {
     category: String,
     offset: u16,
-    protocols: Vec<String>,
+    protocols: Vec<Protocol>,
+}
+
+fn protocol_handle_default() -> bool { true }
+#[derive(Debug, Deserialize)]
+struct Protocol {
+    protocol: String,
+    target: ProtocolTarget,
+    #[serde(default = "protocol_handle_default")]
+    handle: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum ProtocolTarget {
+    Client,
+    Server,
+    All,
 }
 
 #[derive(Debug)]
-struct Protocol {
+struct ProtocolEntry {
     category: String,
-    name: String,
     number: u16,
+    protocol: Protocol,
 }
 
 impl Generator {
@@ -31,46 +48,8 @@ impl Generator {
         Self {
             config,
             categories: Vec::new(),
-            protocols: Vec::new(),
+            protocol_entries: Vec::new(),
         }
-    }
-
-    pub fn compile(&self) -> Result<(), Error> {
-        fn find(schema_base_dir: &PathBuf, schema_dir: &PathBuf) -> Vec<PathBuf> {
-            let schemas: Vec<PathBuf> = [
-                schema_base_dir.join("*.proto").to_str().unwrap(),
-                schema_dir.join("**/*.proto").to_str().unwrap(),
-            ]
-            .iter()
-            .flat_map(|pattern| glob(pattern).unwrap())
-            .filter_map(Result::ok)
-            .collect();
-
-            schemas
-        }
-
-        let schema_base_dir = &self.config.schema_dir;
-
-        // Game protocols
-        let schema_dir = schema_base_dir.join("game");
-        let schemas = find(schema_base_dir, &schema_dir);
-
-        for schema in &schemas {
-            println!("cargo:rerun-if-changed={}", schema.display());
-        }
-
-        prost_build::compile_protos(&schemas, &[schema_base_dir, &schema_dir])?;
-
-        // Lobby protocols
-        let schema_dir = schema_base_dir.join("lobby");
-        let schemas = find(schema_base_dir, &schema_dir);
-
-        for schema in &schemas {
-            println!("cargo:rerun-if-changed={}", schema.display());
-        }
-        tonic_prost_build::configure().compile_protos(&schemas, &[schema_base_dir.clone(), schema_dir])?;
-
-        Ok(())
     }
 
     pub fn collect(&mut self) -> Result<(), Error> {
@@ -84,13 +63,14 @@ impl Generator {
             self.categories.push(category);
         }
 
-        for category in &self.categories {
+        for mut category in self.categories.drain(..) {
             let mut number = category.offset;
-            for protocol in &category.protocols {
-                self.protocols.push(Protocol {
+
+            for protocol in category.protocols.drain(..) {
+                self.protocol_entries.push(ProtocolEntry {
                     category: category.category.clone(),
-                    name: protocol.clone(),
-                    number
+                    number,
+                    protocol,
                 });
                 number += 1;
             }
@@ -100,42 +80,82 @@ impl Generator {
     }
 
     pub fn generate(&self) -> Result<(), Error> {
-        let mut protocol_decodes = Vec::new();
+        if self.config.generate_impl {
+            self.generate_impl()?;
+        }
+
+        if self.config.generate_handle {
+            self.generate_handle()?;
+        }
+
+        Ok(())
+    }
+
+    fn generate_impl(&self) -> Result<(), Error> {
         let mut protocol_impls = Vec::new();
 
-        for protocol in &self.protocols {
-            let protocol_full_name = format!("{}::{}", protocol.category, protocol.name);
-
-            protocol_decodes.push(format!(
-                "{TAB}{TAB}{} => Box::new({protocol_full_name}::decode(buf)?),",
-                protocol.number,
-            ));
+        for entry in &self.protocol_entries {
+            let protocol_full_name = format!("{}::{}", entry.category, entry.protocol.protocol);
 
             protocol_impls.push(format!(r#"
 impl crate::game::Protocol for {protocol_full_name} {{
     fn protocol_id(&self) -> u16 {{ {protocol_number} }}
-    fn as_any(&self) -> &dyn std::any::Any {{ self }}
 }}
 "#,
-            protocol_number = protocol.number,
+            protocol_number = entry.number,
             ));
         }
 
         let code = format!(r#"
-pub fn decode(id: u16, buf: bytes::Bytes) -> Result<Box<dyn crate::game::Protocol>, Error> {{
-    Ok(match id {{
-{protocol_decodes_code}
-        _ => return Err(Error::ProtocolId(id)),
-    }})
-}}
-
 {protocol_impls_code}
         "#,
-            protocol_decodes_code = protocol_decodes.join("\n"),
-            protocol_impls_code = protocol_impls.join("\n"),
+           protocol_impls_code = protocol_impls.join("\n"),
         );
 
         let gen_file = PathBuf::from(&self.config.gen_dir).join("spire.protocol.game.impl.rs");
+        fs::write(gen_file, &code)?;
+
+        Ok(())
+    }
+
+    fn generate_handle(&self) -> Result<(), Error> {
+        let mut protocol_handles = Vec::new();
+
+        for entry in &self.protocol_entries {
+            let protocol_full_name = format!("protocol::game::{}::{}", entry.category, entry.protocol.protocol);
+
+            if !entry.protocol.handle {
+                continue;
+            }
+            
+            match &entry.protocol.target {
+                ProtocolTarget::Server | ProtocolTarget::All => {},
+                _ => continue,
+            }
+            
+            protocol_handles.push(format!(
+                "{TAB}{TAB}{} => {protocol_full_name}::decode(data)?.handle(ctx),",
+                entry.number,
+            )); 
+        }
+
+        let code = format!(r#"use prost::Message;
+
+pub fn decode_and_handle(
+    id: u16,
+    data: bytes::Bytes,
+    ctx: &crate::net::session::SessionContext,
+) -> Result<(), protocol::game::Error> {{
+    Ok(match id {{
+{protocol_handles_code}
+        _ => return Err(protocol::game::Error::ProtocolId(id)),
+    }})
+}}
+        "#,
+           protocol_handles_code = protocol_handles.join("\n"),
+        );
+
+        let gen_file = PathBuf::from(&self.config.gen_dir).join("spire.protocol.game.handle.rs");
         fs::write(gen_file, &code)?;
 
         Ok(())

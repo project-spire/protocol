@@ -1,8 +1,15 @@
 {
+    "$schema": "syntax/category.json",
     "category": "net",
     "offset": 1000,
     "protocols": [
-        "Ping",
-        "Pong"
+        {
+            "protocol": "Ping",
+            "target": "all"
+        },
+        {
+            "protocol": "Pong",
+            "target": "all"
+        }
     ]
 }
