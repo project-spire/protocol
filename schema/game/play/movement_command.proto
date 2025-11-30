@@ -4,29 +4,32 @@ import "vector.proto";
 
 package spire.protocol.game.play;
 
-message HaltMovementCommand {}
-
-message WalkMovementCommand {
-  Vector2 direction = 1;
-}
-
-message RunMovementCommand {
-  Vector2 direction = 1;
-}
-
-message RollMovementCommand {
-  Vector2 direction = 1;
-}
-
-message JumpMovementCommand {}
-
 message MovementCommand {
-  int64 timestamp = 1;
+    message Halt {}
 
-  oneof command {
-    HaltMovementCommand halt = 2;
-    WalkMovementCommand walk = 3;
-    RunMovementCommand run = 4;
-    RollMovementCommand roll = 5;
-  }
+    message Walk {
+        Vector2 direction = 1;
+    }
+
+    message Run {
+        Vector2 direction = 1;
+    }
+
+    message Roll {
+        Vector2 direction = 1;
+    }
+
+    message Jump {
+        Vector2 direction = 1;
+    }
+
+    int64 timestamp = 1;
+
+    oneof command {
+        Halt halt = 2;
+        Walk walk = 3;
+        Run run = 4;
+        Roll roll = 5;
+        Jump jump = 6;
+    }
 }

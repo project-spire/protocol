@@ -264,7 +264,7 @@ pub fn decode_global(
             match entry.protocol.handler {
                 ProtocolHandler::Local => {
                     protocol_local_handles.push(format!(
-                        "{TAB}{TAB}{}(p) => p.handle(zone),",
+                        "{TAB}{TAB}{}(p) => p.handle(entity, zone),",
                         entry.protocol.protocol,
                     ));
                 }
@@ -281,6 +281,7 @@ pub fn decode_global(
 
 pub fn handle_local(
     protocol: IngressLocalProtocol,
+    entity: bevy_ecs::entity::Entity,
     zone: &mut Zone,
 ) {{
     use IngressLocalProtocol::*;
