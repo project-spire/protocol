@@ -5,11 +5,13 @@
     "protocols": [
         {
             "protocol": "Ping",
-            "target": "all"
+            "target": "all",
+            "handler": "global"
         },
         {
             "protocol": "Pong",
-            "target": "all"
+            "target": "all",
+            "handler": "global"
         }
     ]
 }

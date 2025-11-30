@@ -25,6 +25,11 @@ pub trait Protocol {
     fn protocol_id(&self) -> ProtocolId;
 }
 
+pub enum ProtocolHandler {
+    Local,
+    Global,
+}
+
 impl Header {
     pub const fn size() -> usize {
         4

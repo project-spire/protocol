@@ -6,8 +6,6 @@ use std::path::PathBuf;
 use crate::error::Error;
 use crate::generator::Generator;
 
-const TAB: &str = "    ";
-
 #[derive(Debug)]
 pub struct Config {
     pub schema_dir: PathBuf,
