@@ -30,6 +30,9 @@ struct Protocol {
     handle: bool,
     #[serde(default)]
     handler: ProtocolHandler,
+    
+    #[serde(default, rename = "box")]
+    __box: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -130,44 +133,56 @@ impl crate::game::Protocol for {protocol_full_name} {{
                 ProtocolTarget::Server | ProtocolTarget::All => {},
                 _ => continue,
             }
+            
+            let mut push = |
+                protocol_enums: &mut Vec<String>,
+                protocol_decodes: &mut Vec<String>,
+                protocol_handler: &str,
+            | {
+                if entry.protocol.__box {
+                    protocol_enums.push(format!(
+                        "{TAB}{}(Box<{}>),",
+                        entry.protocol.protocol,
+                        protocol_full_name,
+                    ));
+
+                    protocol_decodes.push(format!(
+                        "{TAB}{TAB}{} => {}(Box::new({protocol_full_name}::decode(data)?)),",
+                        entry.number,
+                        entry.protocol.protocol,
+                    ));
+                } else {
+                    protocol_enums.push(format!(
+                        "{TAB}{}({}),",
+                        entry.protocol.protocol,
+                        protocol_full_name,
+                    ));
+
+                    protocol_decodes.push(format!(
+                        "{TAB}{TAB}{} => {}({protocol_full_name}::decode(data)?),",
+                        entry.number,
+                        entry.protocol.protocol,
+                    ));
+                }
+
+                protocol_handler_enums.push(format!(
+                    "{TAB}{TAB}{} => {},",
+                    entry.number,
+                    protocol_handler,
+                ))
+            };
 
             match entry.protocol.handler {
-                ProtocolHandler::Local => {
-                    protocol_local_enums.push(format!(
-                        "{TAB}{}({}),",
-                        entry.protocol.protocol,
-                        protocol_full_name,
-                    ));
-
-                    protocol_local_decodes.push(format!(
-                        "{TAB}{TAB}{} => {}({protocol_full_name}::decode(data)?),",
-                        entry.number,
-                        entry.protocol.protocol,
-                    ));
-
-                    protocol_handler_enums.push(format!(
-                        "{TAB}{TAB}{} => Local,",
-                        entry.number,
-                    ))
-                }
-                ProtocolHandler::Global => {
-                    protocol_global_enums.push(format!(
-                        "{TAB}{}({}),",
-                        entry.protocol.protocol,
-                        protocol_full_name,
-                    ));
-
-                    protocol_global_decodes.push(format!(
-                        "{TAB}{TAB}{} => {}({protocol_full_name}::decode(data)?),",
-                        entry.number,
-                        entry.protocol.protocol,
-                    ));
-
-                    protocol_handler_enums.push(format!(
-                        "{TAB}{TAB}{} => Global,",
-                        entry.number,
-                    ))
-                }
+                ProtocolHandler::Local => push(
+                    &mut protocol_local_enums,
+                    &mut protocol_local_decodes,
+                    "Local",
+                ),
+                ProtocolHandler::Global => push(
+                    &mut protocol_global_enums,
+                    &mut protocol_global_decodes,
+                    "Global",
+                ),
             }
         }
 

@@ -17,7 +17,8 @@
                 "protocol": { "type": "string" },
                 "target": { "enum": ["client", "server", "all"] },
                 "handle": { "type": "boolean" },
-                "handler": { "enum": ["local", "global"] }
+                "handler": { "enum": ["local", "global"] },
+                "box": { "type": "boolean" }
             },
             "required": ["protocol", "target"]
         }
