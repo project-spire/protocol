@@ -1,95 +1,119 @@
 using System.Collections.Immutable;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Humanizer;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-
 namespace Spire.ProtocolGenerator;
+
+public class CategorySchema
+{
+    public string Category { get; set; }
+    public ushort Offset { get; set; }
+    public List<ProtocolSchema> Protocols { get; set; } = [];
+}
+
+public class ProtocolSchema
+{
+    public string Protocol { get; set; }
+    public ProtocolTarget Target { get; set; }
+}
+
+public enum ProtocolTarget
+{
+    Client,
+    Server,
+    All
+}
+
+public class CategoryParseResult
+{
+    public CategorySchema Schema { get; set; }
+    public string FileName { get; set; }
+    public bool IsSuccess { get; set; }
+    public string ErrorMessage { get; set; }
+}
 
 [Generator]
 public class ProtocolGenerator : IIncrementalGenerator
 {
     private const string Tab = "    ";
 
-    private record JsonFileData(string Path, string Content)
-    {
-        public string Path { get; } = Path;
-        public string Content { get; } = Content;
-    }
+    private static readonly DiagnosticDescriptor FileError = new DiagnosticDescriptor(
+        "FILE001", "File error", "Invalid file: '{0}': {1}", "Gen", DiagnosticSeverity.Error, true);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var jsonFiles = context.AdditionalTextsProvider
-            .Where(file => file.Path.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-            .Select((file, ct) => new JsonFileData
-            (
-                file.Path,
-                file.GetText(ct)?.ToString() ?? string.Empty
-            ))
-            .Collect();
-        
-        context.RegisterSourceOutput(jsonFiles, GenerateProtocolCode);
-    }
-
-    private void GenerateProtocolCode(
-        SourceProductionContext context,
-        ImmutableArray<JsonFileData> jsonFiles)
-    {
-        List<CategorySchema> categories = [];
         var options = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
         };
         
-        ReportInfo(context, "GEN000", "Generate Start", "Generating...");
-        
-        foreach (var file in jsonFiles)
-        {
-            ReportInfo(context, "GEN000", "Generate Start", 
-                $"Generating from {file.Path}");
-            
-            try
+        var pipeline = context.AdditionalTextsProvider
+            .Where(text => text.Path.EndsWith(".json"))
+            .Select((text, cancellationToken) =>
             {
-                var category = JsonSerializer.Deserialize<CategorySchema>(file.Content, options);
-                if (category != null)
+                var content = text.GetText(cancellationToken)?.ToString();
+                var fileName = Path.GetFileName(text.Path);
+                
+                if (string.IsNullOrWhiteSpace(content))
                 {
-                    categories.Add(category);
+                    return new CategoryParseResult { IsSuccess = false, FileName = fileName };
                 }
-            }
-            catch (Exception ex)
-            {
-                ReportWarning(context, "SPG004", "Schema Parse Error",
-                    $"Failed to parse {Path.GetFileName(file.Path)}: {ex.Message}");
-            }
-        }
+
+                try
+                {
+                    var schema = JsonSerializer.Deserialize<CategorySchema>(content!, options);
+                    return schema == null 
+                        ? new CategoryParseResult { IsSuccess = false, FileName = fileName }
+                        : new CategoryParseResult { IsSuccess = true, FileName = fileName, Schema = schema };
+                }
+                catch (Exception ex)
+                {
+                    return new CategoryParseResult { IsSuccess = false, FileName = fileName, ErrorMessage = ex.Message };
+                }
+            })
+            .Collect();
         
-        if (categories.Count == 0)
+        context.RegisterSourceOutput(pipeline, GenerateProtocolCode);
+    }
+
+    private static void GenerateProtocolCode(
+        SourceProductionContext context,
+        ImmutableArray<CategoryParseResult> results)
+    {
+        List<CategorySchema> categorySchemas = [];
+        foreach (var result in results)
         {
-            ReportWarning(context, "SPG003", "No Schema Files",
-                "No JSON schema files found");
-            return;
-        }
-        
-        categories.Sort((a, b) => a.Offset.CompareTo(b.Offset));
-        
-        List<(string category, string protocolName, ushort number)> protocols = [];
-        foreach (var category in categories)
-        {
-            var number = category.Offset;
-            foreach (var protocol in category.Protocols)
+            if (!result.IsSuccess)
             {
-                protocols.Add((category.Category, protocol, number));
+                context.ReportDiagnostic(Diagnostic.Create(FileError, Location.None, result.FileName, result.ErrorMessage));
+                return;
+            }
+            
+            categorySchemas.Add(result.Schema);
+        }
+        categorySchemas.Sort((x, y) => x.Offset.CompareTo(y.Offset));
+        
+        List<(string category, string protocol, ushort number)> protocols = [];
+        foreach (var categorySchema in categorySchemas)
+        {
+            var number = categorySchema.Offset;
+            foreach (var protocolSchema in categorySchema.Protocols)
+            {
+                protocols.Add((categorySchema.Category, protocolSchema.Protocol, number));
                 number += 1;
             }
         }
         
-        var code = GenerateCode(protocols);
+        var code = GenerateProtocolCodeInternal(protocols);
         context.AddSource("Protocol.impl.g.cs", SourceText.From(code, Encoding.UTF8));
     }
 
-    private string GenerateCode(List<(string category, string protocolName, ushort number)> protocols)
+    private static string GenerateProtocolCodeInternal(List<(string category, string protocol, ushort number)> protocols)
     {
         List<string> decodes = [];
         List<string> cases = [];
@@ -139,36 +163,5 @@ public class ProtocolException(string message) : Exception(message);
 
 {string.Join("\n", cases)}
 ";
-    }
-
-    private static void ReportInfo(SourceProductionContext context, string id, string title, string message)
-    {
-        context.ReportDiagnostic(Diagnostic.Create(
-            new DiagnosticDescriptor(id, title, message, "Configuration", 
-                DiagnosticSeverity.Info, isEnabledByDefault: true),
-            Location.None));
-    }
-    
-    private static void ReportError(SourceProductionContext context, string id, string title, string message)
-    {
-        context.ReportDiagnostic(Diagnostic.Create(
-            new DiagnosticDescriptor(id, title, message, "Configuration", 
-                DiagnosticSeverity.Error, isEnabledByDefault: true),
-            Location.None));
-    }
-
-    private static void ReportWarning(SourceProductionContext context, string id, string title, string message)
-    {
-        context.ReportDiagnostic(Diagnostic.Create(
-            new DiagnosticDescriptor(id, title, message, "Configuration", 
-                DiagnosticSeverity.Warning, isEnabledByDefault: true),
-            Location.None));
-    }
-    
-    private class CategorySchema
-    {
-        public string Category { get; set; } = string.Empty;
-        public ushort Offset { get; set; }
-        public List<string> Protocols { get; set; } = [];
     }
 }
