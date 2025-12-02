@@ -10,6 +10,14 @@
         {
             "protocol": "MovementSync",
             "target": "client"
+        },
+        {
+            "protocol": "ItemPickup",
+            "target": "server"
+        },
+        {
+            "protocol": "ItemPickupResult",
+            "target": "client"
         }
     ]
 }

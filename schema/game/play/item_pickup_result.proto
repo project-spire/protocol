@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package spire.protocol.game.play;
+
+message ItemPickupResult {
+
+}
