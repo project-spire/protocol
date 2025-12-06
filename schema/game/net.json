@@ -1,7 +1,7 @@
 {
     "$schema": "syntax/category.json",
     "category": "net",
-    "offset": 1000,
+    "offset": 100,
     "protocols": [
         {
             "protocol": "Ping",
