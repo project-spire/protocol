@@ -20,6 +20,6 @@ message MovementState {
 }
 
 message MovementSync {
-    int64 timestamp = 1;
+    uint64 timestamp = 1;
     repeated MovementState states = 2;
 }
