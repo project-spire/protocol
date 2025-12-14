@@ -12,6 +12,24 @@
             "protocol": "Pong",
             "target": "all",
             "handler": "global"
+        },
+        {
+            "protocol": "ZoneTransfer",
+            "target": "server",
+            "handler": "global"
+        },
+        {
+            "protocol": "ZoneTransferResult",
+            "target": "client"
+        },
+        {
+            "protocol": "ZoneTransferReady",
+            "target": "server",
+            "handler": "global"
+        },
+        {
+            "protocol": "ZoneTransferReadyResult",
+            "target": "client"
         }
     ]
 }

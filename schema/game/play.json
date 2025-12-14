@@ -4,11 +4,11 @@
     "offset": 1000,
     "protocols": [
         {
-            "protocol": "MovementCommand",
-            "target": "server"
+            "protocol": "EntitySpawn",
+            "target": "client"
         },
         {
-            "protocol": "MovementSync",
+            "protocol": "EntityDespawn",
             "target": "client"
         },
         {
@@ -17,6 +17,34 @@
         },
         {
             "protocol": "ItemPickupResult",
+            "target": "client"
+        },
+        {
+            "protocol": "MovementCommand",
+            "target": "server"
+        },
+        {
+            "protocol": "MovementSync",
+            "target": "client"
+        },
+        {
+            "protocol": "SkillCancel",
+            "target": "server"
+        },
+        {
+            "protocol": "SkillCancelResult",
+            "target": "client"
+        },
+        {
+            "protocol": "SkillUse",
+            "target": "server"
+        },
+        {
+            "protocol": "SkillUseResult",
+            "target": "client"
+        },
+        {
+            "protocol": "SkillUseSync",
             "target": "client"
         }
     ]

@@ -4,6 +4,7 @@ import "vector.proto";
 
 package spire.protocol.game.play;
 
+// Client -> Server
 message MovementCommand {
     message Walk {
         Vector2 direction = 1;

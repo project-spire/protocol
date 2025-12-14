@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-import "vector.proto";
+import "transform.proto";
 
 package spire.protocol.game.play;
 
@@ -15,10 +15,10 @@ message MovementState {
 
     uint64 entity = 1;
     Motion motion = 2;
-    Vector3 position = 3;
-    Vector2 direction = 4;
+    Transform transform = 3;
 }
 
+// Client <- Server
 message MovementSync {
     uint64 timestamp = 1;
     repeated MovementState states = 2;

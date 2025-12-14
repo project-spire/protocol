@@ -4,7 +4,7 @@ import "race.gen.proto";
 
 package spire.protocol;
 
-message Character {
+message CharacterData {
     int64 id = 1;
     string name = 2;
     Race race = 3;

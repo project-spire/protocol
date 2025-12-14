@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package spire.protocol.game.net;
 
+// Client <-> Server
 message Pong {
-  int64 timestamp = 1;
+    uint64 timestamp = 1;
 }

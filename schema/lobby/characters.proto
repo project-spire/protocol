@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-import "character.proto";
+import "character_data.proto";
 import "race.gen.proto";
+import "google/protobuf/empty.proto";
 
 package spire.protocol.lobby;
 
@@ -13,7 +13,7 @@ service Characters {
 }
 
 message ListCharactersResponse {
-    repeated Character characters = 1;
+    repeated CharacterData characters = 1;
 }
 
 message CreateCharacterRequest {
@@ -29,7 +29,7 @@ message CreateCharacterResponse {
     }
 
     Result result = 1;
-    optional Character character = 2;
+    optional CharacterData character = 2;
 }
 
 message DeleteCharacterRequest {
