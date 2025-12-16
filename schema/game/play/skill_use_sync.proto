@@ -7,7 +7,7 @@ package spire.protocol.game.play;
 
 // Client <- Server
 message SkillUseSync {
-    uint64 timestamp = 1;
+    int64 timestamp = 1;
     uint64 user_entity = 2;
     uint32 skill_data_id = 3;
     oneof target {

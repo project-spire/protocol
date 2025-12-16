@@ -12,6 +12,6 @@ message SkillUseResult {
     }
 
     Result result = 1;
-    uint64 timestamp = 2;
+    int64 timestamp = 2;
     uint32 skill_data_id = 3;
 }

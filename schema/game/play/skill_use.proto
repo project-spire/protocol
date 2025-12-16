@@ -7,7 +7,7 @@ package spire.protocol.game.play;
 
 // Client -> Server
 message SkillUse {
-    uint64 timestamp = 1;
+    int64 timestamp = 1;
     uint32 skill_data_id = 2;
     oneof target {
         google.protobuf.Empty target_none = 3;

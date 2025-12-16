@@ -22,7 +22,7 @@ message MovementCommand {
         Vector2 direction = 1;
     }
 
-    uint64 timestamp = 1;
+    int64 timestamp = 1;
 
     oneof command {
         Walk walk = 2;
