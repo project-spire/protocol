@@ -1,11 +1,30 @@
 syntax = "proto3";
 
 import "race.gen.proto";
+import "resource_data.proto";
 
 package spire.protocol;
+
+message CharacterTinyData {
+    int64 id = 1;
+    string name = 2;
+    Race race = 3;
+
+    uint32 level = 4;
+    uint64 exp = 5;
+    int64 karma = 6;
+
+    repeated ResourceData resources = 7;
+}
 
 message CharacterData {
     int64 id = 1;
     string name = 2;
     Race race = 3;
+
+    uint32 level = 4;
+    uint64 exp = 5;
+    int64 karma = 6;
+
+    repeated ResourceData resources = 7;
 }

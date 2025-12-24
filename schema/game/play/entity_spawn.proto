@@ -13,8 +13,8 @@ message EntitySpawn {
     Transform transform = 2;
 
     oneof data {
-        PlayerData player = 10;
-        CharacterData character = 11;
+        PlayerTinyData player = 10;
+        CharacterTinyData character = 11;
         ItemData item = 12;
     }
 }

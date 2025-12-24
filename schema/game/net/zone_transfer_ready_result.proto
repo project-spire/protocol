@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "transform.proto";
+
 package spire.protocol.game.net;
 
 // Client <- Server
@@ -11,4 +13,6 @@ message ZoneTransferReadyResult {
 
     Result result = 1;
     int64 zone_id = 2;
+    uint64 entity = 3;
+    Transform transform = 4;
 }

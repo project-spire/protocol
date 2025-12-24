@@ -1,9 +1,16 @@
 syntax = "proto3";
 
 import "character_data.proto";
+import "guild_data.proto";
 
 package spire.protocol;
 
+message PlayerTinyData {
+    CharacterTinyData character = 1;
+    optional GuildTinyData guild = 2;
+}
+
 message PlayerData {
-    CharacterData character_data = 1;
+    CharacterData character = 1;
+    optional GuildData guild = 2;
 }

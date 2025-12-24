@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package spire.protocol;
+
+message ResourceData {
+    enum Kind {
+        Health = 0;
+        Mana = 1;
+        Shield = 2;
+        Stamina = 3;
+    }
+    
+    Kind kind = 1;
+    uint64 current = 2;
+    uint64 max = 3;
+}
