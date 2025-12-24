@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package spire.protocol.game.net;
 
-// Client -> Server
+// Client <-> Server
 message ZoneTransfer {
     int64 zone_id = 1;
 }

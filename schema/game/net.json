@@ -15,17 +15,11 @@
         },
         {
             "protocol": "ZoneTransfer",
-            "target": "server",
-            "handler": "global"
-        },
-        {
-            "protocol": "ZoneTransferResult",
             "target": "client"
         },
         {
             "protocol": "ZoneTransferReady",
-            "target": "server",
-            "handler": "global"
+            "target": "server"
         },
         {
             "protocol": "ZoneTransferReadyResult",
