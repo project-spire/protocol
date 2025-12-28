@@ -3,4 +3,6 @@ syntax = "proto3";
 package spire.protocol.game.social;
 
 // Client -> Server
-message PartyCreate {}
+message PartyCreate {
+    optional string name = 1;
+}

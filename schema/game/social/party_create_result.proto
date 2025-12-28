@@ -1,6 +1,16 @@
 syntax = "proto3";
 
+import "party_data.proto";
+
 package spire.protocol.game.social;
 
 // Client <- Server
-message PartyCreateResult {}
+message PartyCreateResult {
+    enum Error {
+        Internal = 0;
+        Joined = 1;
+    }
+
+    optional Error error = 1;
+    PartyTinyData party = 2;
+}
