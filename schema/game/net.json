@@ -1,5 +1,5 @@
 {
-    "$schema": "syntax/category.json",
+    "$schema": "category.schema.json",
     "category": "net",
     "offset": 100,
     "protocols": [

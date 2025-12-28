@@ -1,7 +1,7 @@
 {
-    "$schema": "syntax/category.json",
+    "$schema": "category.schema.json",
     "category": "play",
-    "offset": 1000,
+    "offset": 10000,
     "protocols": [
         {
             "protocol": "EntitySpawn",
